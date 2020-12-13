@@ -11,11 +11,13 @@
 #include <QString>
 
 #include "environement_foret.h"
+#include "agent_explorateur.h"
 
 class Fenetre_affichage_foret : public QOpenGLWindow
 {
 public:
-    Fenetre_affichage_foret(Environement_foret* foret, QWidget *parent = nullptr);
+    Fenetre_affichage_foret(Agent_explorateur* agent, QWidget *parent = nullptr);
+    void rafraichissement_image();
 
 protected:
     virtual void initializeGL();
@@ -25,10 +27,10 @@ protected:
 private:
     QOpenGLContext *context;
     QOpenGLFunctions *openGLFunctions;
-    Environement_foret* foret;
+    Agent_explorateur* agent;
 
 public slots:
-    void rafraichissement_image(void);
+//    void rafraichissement_image(void);
 
 };
 

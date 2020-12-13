@@ -1,6 +1,6 @@
 #include "fenetre_affichage_foret.h"
 
-Fenetre_affichage_foret::Fenetre_affichage_foret(Environement_foret* foret, QWidget *parent)
+Fenetre_affichage_foret::Fenetre_affichage_foret(Agent_explorateur* agent, QWidget *parent)
 {
     //Je ne sais pas tros a quoi tous ça sert
     setSurfaceType(QWindow::OpenGLSurface);
@@ -19,7 +19,13 @@ Fenetre_affichage_foret::Fenetre_affichage_foret(Environement_foret* foret, QWid
     //Là je comprend mieux a quoi ça sert
     this->setTitle("La Foret Enchantée");
     this->resize(1280, 960);
-    this->foret = foret;
+    this->agent = agent;
+}
+
+void Fenetre_affichage_foret::rafraichissement_image()
+{
+    resize(width(), height()-1);
+    resize(width(), height()+1);
 }
 
 void Fenetre_affichage_foret::initializeGL()
@@ -39,17 +45,49 @@ void Fenetre_affichage_foret::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
 
     //On construe l'affichage de la foret
-    int foret_dimention_x = this->foret->tableau[0].size();
-    int foret_dimention_y = this->foret->tableau.size();
+    int foret_dimention_x = this->agent->carte_foret[0].size();
+    int foret_dimention_y = this->agent->carte_foret.size();
 
 
     //On parcoure toutes les cellules du tableau est on affiche les entités
-    for(int i = 0; i < foret_dimention_x; i++)
+    for(int i = 0; i < foret_dimention_y; i++)
     {
-        for(int j = 0; j < foret_dimention_y; j++)
+        for(int j = 0; j < foret_dimention_x; j++)
         {
             //On affiche la sortie
-            if(this->foret->tableau[i][j] == sortie)
+            if(this->agent->carte_foret[i][j].decouverte == false)
+            {
+                double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
+                double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
+
+                double taille_case_x = (double)2 / (double)foret_dimention_x;
+                double taille_case_y = (double)2 / (double)foret_dimention_y;
+
+                glBegin(GL_POLYGON);
+                glColor3f(0,0,0);
+                glVertex2f(position_point_x, position_point_y);
+                glVertex2f(position_point_x + taille_case_x, position_point_y);
+                glVertex2f(position_point_x + taille_case_x, position_point_y + taille_case_y);
+                glVertex2f(position_point_x, position_point_y + taille_case_y);
+                glEnd();
+            }
+            if(this->agent->carte_foret[i][j].valable == true)
+            {
+                double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
+                double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
+
+                double taille_case_x = (double)2 / (double)foret_dimention_x;
+                double taille_case_y = (double)2 / (double)foret_dimention_y;
+
+                glBegin(GL_POLYGON);
+                glColor3f(0.5,0.5,0.5);
+                glVertex2f(position_point_x, position_point_y);
+                glVertex2f(position_point_x + taille_case_x, position_point_y);
+                glVertex2f(position_point_x + taille_case_x, position_point_y + taille_case_y);
+                glVertex2f(position_point_x, position_point_y + taille_case_y);
+                glEnd();
+            }
+            if(this->agent->element_sur_case(i, j, sortie) != -1)
             {
                 double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
                 double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
@@ -65,7 +103,7 @@ void Fenetre_affichage_foret::paintGL()
                 glVertex2f(position_point_x, position_point_y + taille_case_y);
                 glEnd();
             }
-            else if(this->foret->tableau[i][j] == trou)
+            if(this->agent->element_sur_case(i, j, trou) != -1)
             {
                 double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
                 double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
@@ -81,23 +119,7 @@ void Fenetre_affichage_foret::paintGL()
                 glVertex2f(position_point_x, position_point_y + taille_case_y);
                 glEnd();
             }
-            else if(this->foret->tableau[i][j] == vent)
-            {
-                double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
-                double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
-
-                double taille_case_x = (double)2 / (double)foret_dimention_x;
-                double taille_case_y = (double)2 / (double)foret_dimention_y;
-
-                glBegin(GL_POLYGON);
-                glColor3f(0.45, 0.45, 0.45);
-                glVertex2f(position_point_x, position_point_y);
-                glVertex2f(position_point_x + taille_case_x, position_point_y);
-                glVertex2f(position_point_x + taille_case_x, position_point_y + taille_case_y);
-                glVertex2f(position_point_x, position_point_y + taille_case_y);
-                glEnd();
-            }
-            else if(this->foret->tableau[i][j] == monstre)
+            if(this->agent->element_sur_case(i, j, monstre) != -1)
             {
                 double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
                 double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
@@ -113,7 +135,7 @@ void Fenetre_affichage_foret::paintGL()
                 glVertex2f(position_point_x, position_point_y + taille_case_y);
                 glEnd();
             }
-            else if(this->foret->tableau[i][j] == caillou)
+            if(this->agent->element_sur_case(i, j, joueur) != -1)
             {
                 double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
                 double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
@@ -122,7 +144,7 @@ void Fenetre_affichage_foret::paintGL()
                 double taille_case_y = (double)2 / (double)foret_dimention_y;
 
                 glBegin(GL_POLYGON);
-                glColor3f(1, 0.2, 0.5);
+                glColor3f(0.93, 0.5, 0.93);
                 glVertex2f(position_point_x, position_point_y);
                 glVertex2f(position_point_x + taille_case_x, position_point_y);
                 glVertex2f(position_point_x + taille_case_x, position_point_y + taille_case_y);
