@@ -167,7 +167,7 @@ void Fenetre_affichage_foret::paintGL()
                 glVertex2f(position_point_x, position_point_y + taille_case_y);
                 glEnd();
             }
-            if(this->agent->element_sur_case(i, j, joueur) != -1)
+            if(this->agent->element_sur_case(i, j, joueur) != -1 && this->agent->element_sur_case(i, j, sortie) == -1)
             {
                 double position_point_x = (double)((double)2 / (double)foret_dimention_x) * i - 1;
                 double position_point_y = (double)((double)2 / (double)foret_dimention_y) * j - 1;
