@@ -20,6 +20,7 @@ private:
     int temps_action = 100;
     int position_y;
     int position_x;
+    int mes_performance = 0;
 
 };
 

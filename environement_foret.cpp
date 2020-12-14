@@ -55,6 +55,21 @@ Environement_foret::Environement_foret(int taille_foret_x, int taille_foret_y, d
             else if(valeur_alea <= proba_vide + proba_trou + proba_monstre && element_sur_case(i, j, sortie) == -1)
             {
                 this->tableau[i][j].append(monstre);
+                for(int k = 0; k < tableau[i][j].length();i++)
+                {
+                    //On crée les cases avec des odeurs
+                    if(i + 1 < taille_foret_y && std::find(std::begin(tableau[i+1][j]),std::begin(tableau[i+1][j]), monstre) == 0)
+                        this->tableau[i+1][j].append(odeur);
+
+                    if(i - 1 >= 0 && std::find(std::begin(tableau[i-1][j]),std::begin(tableau[i+1][j]), monstre) == 0)
+                        this->tableau[i-1][j].append(odeur);
+
+                    if(j + 1 < taille_foret_x && std::find(std::begin(tableau[i][j+1]),std::begin(tableau[i+1][j]), monstre) == 0)
+                        this->tableau[i][j+1].append(odeur);
+
+                    if(j - 1 >= 0 && std::find(std::begin(tableau[i+1][j]),std::begin(tableau[i][j-1]), monstre) == 0)
+                        this->tableau[i][j-1].append(odeur);
+                }
             }
             //On crée les caillou
             else if(element_sur_case(i, j, sortie) == -1)

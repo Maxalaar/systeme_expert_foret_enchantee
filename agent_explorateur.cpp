@@ -51,13 +51,34 @@ int Agent_explorateur::deplacement(int x, int y)
     {
         if(carte_foret[x][y].liste_element[i] == sortie)
         {
+            this->mes_performance += 10*taille_foret_x*taille_foret_y;
             return 1;
         }
         if(carte_foret[x][y].liste_element[i] == trou)
         {
+            this->mes_performance -= 10*taille_foret_x*taille_foret_y;
             return -1;
         }
         if(carte_foret[x][y].liste_element[i] == vent)
+        {
+            if(y + 1 < taille_foret_y)
+                carte_foret[x][y+1].desirabilite -= 10;
+
+            if(y - 1 >= 0)
+                carte_foret[x][y-1].desirabilite -= 10;
+
+            if(x + 1 < taille_foret_x)
+                carte_foret[x+1][y].desirabilite -= 10;
+
+            if(x - 1 >= 0)
+                carte_foret[x-1][y].desirabilite -= 10;
+        }
+        if(carte_foret[x][y].liste_element[i] == monstre)
+        {
+            this->mes_performance -= 10*taille_foret_x*taille_foret_y;
+            return -1;
+        }
+        if(carte_foret[x][y].liste_element[i] == odeur)
         {
             if(y + 1 < taille_foret_y)
                 carte_foret[x][y+1].desirabilite -= 10;
@@ -81,22 +102,22 @@ int Agent_explorateur::action()
 {
     int position_x_action = -1;
     int position_y_action = -1;
-    double désirabilité_max_actuelle = -1000/*std::numeric_limits<double>::min()*/;
+    double desirabilite_max_actuelle = -1000/*std::numeric_limits<double>::min()*/;
 
     for(int i = 0; i < this->carte_foret[0].length(); i++)
     {
         for(int j = 0; j < this->carte_foret.length(); j++)
         {
-            if(carte_foret[i][j].valable == true && carte_foret[i][j].desirabilite > désirabilité_max_actuelle)
+            if(carte_foret[i][j].valable == true && carte_foret[i][j].desirabilite > desirabilite_max_actuelle)
             {
-                désirabilité_max_actuelle = carte_foret[i][j].desirabilite;
+                desirabilite_max_actuelle = carte_foret[i][j].desirabilite;
                 position_x_action = i;
                 position_y_action = j;
             }
         }
     }
 
-    qDebug() << "case" << position_x_action << position_y_action;
+    qDebug() << "case" << position_x_action << position_y_action << " Mesure de performance : " << this->mes_performance;
     return deplacement(position_x_action, position_y_action);
 }
 

@@ -4,7 +4,7 @@
 #include <QVector>
 #include <QRandomGenerator>
 
-enum typeCase {trou, vent, caillou, monstre, sortie, joueur};
+enum typeCase {trou, vent, caillou, monstre, sortie, joueur, odeur};
 
 class Environement_foret
 {
