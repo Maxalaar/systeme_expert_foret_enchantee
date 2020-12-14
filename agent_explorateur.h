@@ -21,7 +21,7 @@ private:
     int position_y;
     int position_x;
     int mes_performance = 0;
-
+    int nombre_caillou = 0;
 };
 
 #endif // AGENT_EXPLORATEUR_H

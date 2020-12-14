@@ -13,6 +13,7 @@ public:
     bool valable;
     int position_x;
     int position_y;
+    int risque_monstre;
 };
 
 #endif // CASE_CARTE_H

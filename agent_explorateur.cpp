@@ -61,17 +61,51 @@ int Agent_explorateur::deplacement(int x, int y)
         }
         if(carte_foret[x][y].liste_element[i] == vent)
         {
-            if(y + 1 < taille_foret_y)
-                carte_foret[x][y+1].desirabilite -= 10;
+            //On regarde commbien de case adjacente pour coisire la pénaliter pour les case qui ne le sont pas decouverte
+            int nombre_case_non_revele = 0;
+            if(y + 1 < taille_foret_y && carte_foret[x][y+1].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(y - 1 >= 0)
-                carte_foret[x][y-1].desirabilite -= 10;
+            if(y - 1 >= 0 && carte_foret[x][y-1].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(x + 1 < taille_foret_x)
-                carte_foret[x+1][y].desirabilite -= 10;
+            if(x + 1 < taille_foret_x && carte_foret[x+1][y].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(x - 1 >= 0)
-                carte_foret[x-1][y].desirabilite -= 10;
+            if(x - 1 >= 0 && carte_foret[x-1][y].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
+
+            //On calcule les pénaliter
+            int penaliter = 44 / nombre_case_non_revele;
+
+            //On place les pénaliter
+            if(y + 1 < taille_foret_y && carte_foret[x][y+1].decouverte == false)
+            {
+                carte_foret[x][y+1].desirabilite -= penaliter;
+            }
+
+            if(y - 1 >= 0 && carte_foret[x][y-1].decouverte == false)
+            {
+                carte_foret[x][y-1].desirabilite -= penaliter;
+            }
+
+            if(x + 1 < taille_foret_x && carte_foret[x+1][y].decouverte == false)
+            {
+                carte_foret[x+1][y].desirabilite -= penaliter;
+            }
+
+            if(x - 1 >= 0 && carte_foret[x-1][y].decouverte == false)
+            {
+                carte_foret[x-1][y].desirabilite -= penaliter;
+            }
         }
         if(carte_foret[x][y].liste_element[i] == monstre)
         {
@@ -80,18 +114,72 @@ int Agent_explorateur::deplacement(int x, int y)
         }
         if(carte_foret[x][y].liste_element[i] == odeur)
         {
-            if(y + 1 < taille_foret_y)
-                carte_foret[x][y+1].desirabilite -= 10;
+            //On regarde commbien de case adjacente pour coisire la pénaliter pour les case qui ne le sont pas decouverte
+            int nombre_case_non_revele = 0;
+            if(y + 1 < taille_foret_y && carte_foret[x][y+1].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(y - 1 >= 0)
-                carte_foret[x][y-1].desirabilite -= 10;
+            if(y - 1 >= 0 && carte_foret[x][y-1].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(x + 1 < taille_foret_x)
-                carte_foret[x+1][y].desirabilite -= 10;
+            if(x + 1 < taille_foret_x && carte_foret[x+1][y].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
 
-            if(x - 1 >= 0)
-                carte_foret[x-1][y].desirabilite -= 10;
+            if(x - 1 >= 0 && carte_foret[x-1][y].decouverte == false)
+            {
+                nombre_case_non_revele += 1;
+            }
+
+            //On calcule les pénaliter
+            int penaliter = 40 / nombre_case_non_revele;
+
+            if(y + 1 < taille_foret_y && carte_foret[x][y+1].decouverte == false)
+            {
+                carte_foret[x][y+1].desirabilite -= penaliter;
+                carte_foret[x][y+1].risque_monstre += penaliter;
+            }
+
+            if(y - 1 >= 0 && carte_foret[x][y-1].decouverte == false)
+            {
+                carte_foret[x][y-1].desirabilite -= penaliter;
+                carte_foret[x][y-1].risque_monstre += penaliter;
+            }
+
+            if(x + 1 < taille_foret_x && carte_foret[x+1][y].decouverte == false)
+            {
+                carte_foret[x+1][y].desirabilite -= penaliter;
+                carte_foret[x+1][y].risque_monstre += penaliter;
+            }
+
+            if(x - 1 >= 0 && carte_foret[x-1][y].decouverte == false)
+            {
+                carte_foret[x-1][y].desirabilite -= penaliter;
+                carte_foret[x-1][y].risque_monstre += penaliter;
+            }
         }
+        if(carte_foret[x][y].liste_element[i] == caillou)
+            nombre_caillou += 1;
+    }
+
+    if((carte_foret[x][y].liste_element.length() == 1 && carte_foret[x][y].liste_element[0] == joueur) || carte_foret[x][y].liste_element.length() == 0)
+    {
+        if(y + 1 < taille_foret_y)
+            carte_foret[x][y+1].desirabilite = 0;
+
+        if(y - 1 >= 0)
+            carte_foret[x][y-1].desirabilite = 0;
+
+        if(x + 1 < taille_foret_x)
+            carte_foret[x+1][y].desirabilite = 0;
+
+        if(x - 1 >= 0)
+            carte_foret[x-1][y].desirabilite = 0;
     }
 
 
@@ -117,7 +205,23 @@ int Agent_explorateur::action()
         }
     }
 
-    qDebug() << "case" << position_x_action << position_y_action << " Mesure de performance : " << this->mes_performance;
+    if(carte_foret[position_x_action][position_y_action].risque_monstre >= 20 && nombre_caillou > 0)
+    {
+        qDebug() << "L'agent lance un caillou en :" << position_x_action << "," << position_y_action;
+        nombre_caillou -= 1;
+        if (foret->element_sur_case(position_x, position_y, monstre) != -1)
+        {
+            foret->tableau[position_x_action][position_y_action].remove(foret->element_sur_case(position_x, position_y, monstre));
+            qDebug() << "Monstre touché !";
+        }
+        else
+        {
+            qDebug() << "Il n'y a pas de monstre dommage...";
+        }
+        qDebug() << "Il reste :" << nombre_caillou << "caillou(x)";
+    }
+
+    qDebug() << "L'agent ce dépalce en : " << position_x_action << "," << position_y_action << " Mesure de performance : " << this->mes_performance;
     return deplacement(position_x_action, position_y_action);
 }
 
@@ -164,7 +268,7 @@ void Agent_explorateur::ajout_nouvel_environnement(Environement_foret *foret)
         position_y = QRandomGenerator::global()->bounded(foret->tableau[0].size());
         position_x = QRandomGenerator::global()->bounded(foret->tableau.size());
     }
-    while(foret->element_sur_case(position_x, position_y, monstre) != -1 || foret->element_sur_case(position_x, position_y, trou) != -1 || foret->element_sur_case(position_x, position_y, sortie) != -1);
+    while(foret->element_sur_case(position_x, position_y, monstre) != -1 || foret->element_sur_case(position_x, position_y, trou) != -1 || foret->element_sur_case(position_x, position_y, odeur) != -1 || foret->element_sur_case(position_x, position_y, vent) != -1 || foret->element_sur_case(position_x, position_y, sortie) != -1);
 
     deplacement(position_x, position_y);
 }

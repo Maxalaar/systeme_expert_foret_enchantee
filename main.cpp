@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Environement_foret* foret_1 = new Environement_foret(3, 3, 0.85, 0.05, 0.05, 0.05);
+    Environement_foret* foret_1 = new Environement_foret(3, 3, 1, 0.0, 0.0, 0.0);
 
     Agent_explorateur* agent_explorateur = new Agent_explorateur(foret_1);
 
